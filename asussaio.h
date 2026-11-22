@@ -147,6 +147,13 @@ NTSTATUS AsusSAIOHandleEcMailbox(
 );
 
 // pci.c
+BOOLEAN AsusSAIOValidatePciAccess(
+    _In_ UCHAR Bus,
+    _In_ UCHAR Device,
+    _In_ UCHAR Function,
+    _In_ UCHAR Offset
+);
+
 NTSTATUS AsusSAIOReadPciConfig(
     _In_ UCHAR Bus,
     _In_ UCHAR Device,
