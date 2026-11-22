@@ -97,6 +97,11 @@ DRIVER_UNLOAD AsusSAIOUnload;
 DRIVER_DISPATCH AsusSAIODispatch;
 
 // msr.c
+BOOLEAN AsusSAIOIsSafeMsr(
+    _In_ ULONG MsrRegister,
+    _In_ BOOLEAN IsWrite
+);
+
 NTSTATUS AsusSAIOReadMsr(
     _In_ ULONG MsrRegister,
     _Out_ PULONG64 Value
