@@ -1,4 +1,9 @@
 #include "asussaio.h"
+#include <wdmsec.h>
+
+static const GUID GUID_DEVCLASS_ASUSSAIO = {
+    0x4d36e97d, 0xe325, 0x11ce, { 0xbf, 0xc1, 0x08, 0x00, 0x2b, 0xe1, 0x03, 0x18 }
+};
 
 static ASUSSAIO_DEVICE_EXTENSION g_DevExt;
 
@@ -218,16 +223,13 @@ AsusSAIOUnload(
 )
 {
     UNICODE_STRING symbolicLinkName;
-    NTSTATUS status;
 
     RtlInitUnicodeString(&symbolicLinkName, ASUSSAIO_DOS_DEVICE_NAME);
-    status = IoDeleteSymbolicLink(&symbolicLinkName);
+    IoDeleteSymbolicLink(&symbolicLinkName);
 
-    // Initial vulnerable logic: skips IoDeleteDevice if IoDeleteSymbolicLink fails
-    if (NT_SUCCESS(status)) {
-        if (DriverObject->DeviceObject != NULL) {
-            IoDeleteDevice(DriverObject->DeviceObject);
-        }
+    // FIX: Unconditionally delete device object to prevent resource leak on unload
+    if (DriverObject->DeviceObject != NULL) {
+        IoDeleteDevice(DriverObject->DeviceObject);
     }
 }
 
@@ -242,18 +244,26 @@ DriverEntry(
     UNICODE_STRING symbolicLinkName;
     PDEVICE_OBJECT deviceObject = NULL;
 
+    // SDDL Security String:
+    // D:P         -> DACL Protected
+    // (A;;GA;;;SY)-> Allow Generic All to Local System
+    // (A;;GA;;;BA)-> Allow Generic All to Built-in Administrators
+    DECLARE_CONST_UNICODE_STRING(sddlSecureString, L"D:P(A;;GA;;;SY)(A;;GA;;;BA)");
+
     UNREFERENCED_PARAMETER(RegistryPath);
 
     RtlInitUnicodeString(&deviceName, ASUSSAIO_DEVICE_NAME);
 
-    // Initial insecure device creation (CVE-2018-18537 / CVE-2020-15632)
-    status = IoCreateDevice(
+    // FIX: Secure device creation to mitigate CVE-2018-18537
+    status = IoCreateDeviceSecure(
         DriverObject,
         sizeof(ASUSSAIO_DEVICE_EXTENSION),
         &deviceName,
         ASUSSAIO_DEVICE_TYPE,
         FILE_DEVICE_SECURE_OPEN,
         FALSE,
+        &sddlSecureString,
+        &GUID_DEVCLASS_ASUSSAIO,
         &deviceObject
     );
 
