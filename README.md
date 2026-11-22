@@ -21,7 +21,8 @@ Fixed vulnerabilities in opensource driver AsusSAIO.sys:
 - [x] [CVE-2018-18537](https://nvd.nist.gov/vuln/detail/CVE-2018-18537)
   - Insufficient Access Control: Device object `\Device\AsusSAIO` opened with world-accessible DACL (fixed using `IoCreateDeviceSecure` with SDDL `D:P(A;;GA;;;SY)(A;;GA;;;BA)`)
 - [x] Arbitrary MSR Read/Write: IOCTLs 0x8010207C-0x80102094 (fixed with whitelist of monitoring MSRs, blocking IA32_LSTAR and system registers)
-- [ ] Arbitrary Physical Memory Mapping via `MmMapIoSpace` (IOCTLs 0x80102074, 0x80102078)
+- [x] Arbitrary Physical Memory Mapping via `MmMapIoSpace` (IOCTLs 0x80102074, 0x80102078)
+  - Unrestricted Physical Memory Mapping: (fixed with physical address range validation, blocking low memory < 1MB, and integer overflow checks)
 - [ ] Unrestricted Port I/O and EC Mailbox commands (IOCTL 0x80102070)
 - [ ] Arbitrary PCI Configuration space access
 

@@ -113,6 +113,11 @@ NTSTATUS AsusSAIOWriteMsr(
 );
 
 // mem.c
+BOOLEAN AsusSAIOValidatePhysicalAddress(
+    _In_ PHYSICAL_ADDRESS PhysicalAddress,
+    _In_ SIZE_T Length
+);
+
 NTSTATUS AsusSAIOReadPhysicalMemory(
     _In_ ULONG PhysicalAddress,
     _In_ UCHAR Length,
