@@ -125,6 +125,11 @@ NTSTATUS AsusSAIOReadPhysicalMemory(
 );
 
 // io.c
+BOOLEAN AsusSAIOValidateIOPortAccess(
+    _In_ USHORT Port,
+    _In_ BOOLEAN IsWrite
+);
+
 NTSTATUS AsusSAIOReadPort(
     _In_ USHORT Port,
     _In_ UCHAR AccessType,

@@ -23,7 +23,8 @@ Fixed vulnerabilities in opensource driver AsusSAIO.sys:
 - [x] Arbitrary MSR Read/Write: IOCTLs 0x8010207C-0x80102094 (fixed with whitelist of monitoring MSRs, blocking IA32_LSTAR and system registers)
 - [x] Arbitrary Physical Memory Mapping via `MmMapIoSpace` (IOCTLs 0x80102074, 0x80102078)
   - Unrestricted Physical Memory Mapping: (fixed with physical address range validation, blocking low memory < 1MB, and integer overflow checks)
-- [ ] Unrestricted Port I/O and EC Mailbox commands (IOCTL 0x80102070)
+- [x] Unrestricted Port I/O and EC Mailbox commands (IOCTL 0x80102070)
+  - Arbitrary I/O port read/write and EC Mailbox: (fixed with I/O port whitelist, blocking critical system controllers and restricting EC ports 0x25C/0x25D)
 - [ ] Arbitrary PCI Configuration space access
 
 Fixed no publish vulnerabilities and bugs which contributors to this project found:
